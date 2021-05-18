@@ -7,9 +7,11 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
 
-    int index = 0;
+    [SerializeField] Dialogue startDialogue;
+    [SerializeField] float dialogueDelay;
+    [HideInInspector] public Dialogue currentDialogue;
 
-    [SerializeField] StatsHandler[] players;
+    [SerializeField] List<StatsHandler> players = new List<StatsHandler>();
     Dictionary<StatsHandler, StatUI> charactersHp;
     Dictionary<StatsHandler, StatUI> charactersMana;
 
@@ -19,7 +21,9 @@ public class UIManager : MonoBehaviour
     Transform chooseActionTemplate;
     Transform dialogueTemplate;
     Transform chooseSkillTemplate;
-    Transform chooseEnemyTemplate; 
+    Transform chooseEnemyTemplate;
+
+    Text currentText;
 
     private void Awake()
     {
@@ -41,13 +45,25 @@ public class UIManager : MonoBehaviour
 
     public void Init()
     {
+        InitializeDialogueTemplate();
+        InitializeActionTemplate();
+    }
+
+    private void InitializeDialogueTemplate()
+    {
+        currentText = dialogueTemplate.Find("DialogueText").GetComponent<Text>();
+        StartCoroutine(ReadDialogue(startDialogue, dialogueDelay));
+    }
+
+    private void InitializeActionTemplate()
+    {
         Transform alliesActions = chooseActionTemplate.Find("AlliesActions");
         Transform allyActionsPrefab = alliesActions.Find("AllyActions");
         Transform actionTextPrefab = allyActionsPrefab.Find("actionText");
         Transform alliesInfo = chooseActionTemplate.Find("AlliesInfo");
         Transform allyInfoPrefab = alliesInfo.Find("AllyInfo");
 
-        for(int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
             Transform allyInfo = Instantiate(allyInfoPrefab, alliesInfo);
             allyInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, i * -yDistance);
@@ -95,13 +111,13 @@ public class UIManager : MonoBehaviour
             int y = 0;
 
             foreach (Action action in players[i].charInfo.actions)
-            {                
+            {
                 RectTransform actionText = Instantiate(actionTextPrefab, allyActions).GetComponent<RectTransform>();
                 actionText.GetComponent<Text>().text = action.actionName;
                 actionText.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
                 y++;
 
-                if(y == 4)
+                if (y == 4)
                 {
                     x++;
                     y = 0;
@@ -122,6 +138,47 @@ public class UIManager : MonoBehaviour
     {
         charactersMana[character].UpdateUI(character.currentMaxMana, character.currentMaxMana);
     }
+
+    public bool SkipDialogue()
+    {
+        switch (currentDialogue.state)
+        {
+            case DialogueState.Reading:
+                StopAllCoroutines();
+                currentText.text = currentDialogue.dialogueText;
+                currentDialogue.state = DialogueState.Finished;
+                return false;
+            case DialogueState.Finished:
+                if (currentDialogue.nextDialogue != null)
+                {
+                    StartCoroutine(ReadDialogue(currentDialogue.nextDialogue, dialogueDelay));
+                    return false;
+                }
+                break;
+            default: break;               
+        }
+
+        currentDialogue.state = DialogueState.InQueue;
+        dialogueTemplate.gameObject.SetActive(false);
+        chooseActionTemplate.gameObject.SetActive(true);
+        return true;
+    }
+
+    private IEnumerator ReadDialogue(Dialogue dialogue, float waitSeconds)
+    {
+        currentText.text = "";
+        currentDialogue = dialogue;
+        currentDialogue.state = DialogueState.Reading;
+
+        for(int i = 0; i < dialogue.dialogueText.Length; i++)
+        {
+            currentText.text += dialogue.dialogueText[i];
+            yield return new WaitForSeconds(waitSeconds);
+        }
+
+        currentDialogue.state = DialogueState.Finished;
+    }
+
 }
 
 public class StatUI

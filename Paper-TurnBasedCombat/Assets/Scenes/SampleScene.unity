@@ -1601,7 +1601,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea93ca8c80fb0ee41a61be7d9dd00caa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startDialogue: {fileID: 11400000, guid: 09e9d1f119fd0d24e9686a7d81bceb1b, type: 2}
+  dialogueDelay: 0.05
+  currentDialogue: {fileID: 0}
   players:
+  - {fileID: 937301912}
+  - {fileID: 1145076303}
+  - {fileID: 1693002044}
   - {fileID: 121621210}
   xDistance: 110
   yDistance: 23
@@ -1850,6 +1856,7 @@ GameObject:
   - component: {fileID: 937301911}
   - component: {fileID: 937301910}
   - component: {fileID: 937301909}
+  - component: {fileID: 937301912}
   m_Layer: 0
   m_Name: elf
   m_TagString: Player
@@ -1940,6 +1947,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &937301912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937301908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e06a88688e02994989829cb1b5e9de7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charInfo: {fileID: 11400000, guid: 4f045b191a3557044b83c22abe1f9421, type: 2}
+  currentMaxHp: 0
+  currentHp: 0
+  currentAtk: 0
+  currentDef: 0
+  currentMagic: 0
+  currentMaxMana: 0
+  currentMana: 0
 --- !u!1 &1030601157
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,6 +2171,7 @@ GameObject:
   - component: {fileID: 1145076302}
   - component: {fileID: 1145076301}
   - component: {fileID: 1145076300}
+  - component: {fileID: 1145076303}
   m_Layer: 0
   m_Name: knight
   m_TagString: Player
@@ -2234,6 +2262,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1145076303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145076299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e06a88688e02994989829cb1b5e9de7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charInfo: {fileID: 11400000, guid: e3f3afea66e8b7a4b937b5e9eb5206e7, type: 2}
+  currentMaxHp: 0
+  currentHp: 0
+  currentAtk: 0
+  currentDef: 0
+  currentMagic: 0
+  currentMaxMana: 0
+  currentMana: 0
 --- !u!1 &1200106003
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,7 +2297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1200106004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2669,7 +2717,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1412779836
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3046,8 +3094,9 @@ GameObject:
   - component: {fileID: 1693002043}
   - component: {fileID: 1693002042}
   - component: {fileID: 1693002041}
+  - component: {fileID: 1693002044}
   m_Layer: 0
-  m_Name: wizard
+  m_Name: mage
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3136,6 +3185,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1693002044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693002040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e06a88688e02994989829cb1b5e9de7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charInfo: {fileID: 11400000, guid: c18db04534576be4b9b1ea992b26656f, type: 2}
+  currentMaxHp: 0
+  currentHp: 0
+  currentAtk: 0
+  currentDef: 0
+  currentMagic: 0
+  currentMaxMana: 0
+  currentMana: 0
 --- !u!1 &1749891410
 GameObject:
   m_ObjectHideFlags: 0
@@ -3332,6 +3401,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1821839238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1821839240}
+  - component: {fileID: 1821839239}
+  m_Layer: 0
+  m_Name: BattleSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1821839239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821839238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6514cf6269bd74c87e0eb5097cc980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+  - {fileID: 937301912}
+  - {fileID: 1145076303}
+  - {fileID: 1693002044}
+  - {fileID: 121621210}
+--- !u!4 &1821839240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821839238}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 998.0164, y: 520.4019, z: -233.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1903033274
 GameObject:
   m_ObjectHideFlags: 0
