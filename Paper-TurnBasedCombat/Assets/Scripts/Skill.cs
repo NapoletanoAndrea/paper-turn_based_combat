@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Skill : Action
 {
     public int manaConsumed;
+    public string skillDescription;
 
     public override void Act(StatsHandler attacker, StatsHandler target)
     {

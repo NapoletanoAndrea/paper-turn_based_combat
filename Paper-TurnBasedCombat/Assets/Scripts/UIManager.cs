@@ -12,8 +12,11 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public Dialogue currentDialogue;
 
     [SerializeField] List<StatsHandler> players = new List<StatsHandler>();
+    [SerializeField] List<StatsHandler> enemies = new List<StatsHandler>();
     Dictionary<StatsHandler, StatUI> charactersHp;
     Dictionary<StatsHandler, StatUI> charactersMana;
+    Dictionary<StatsHandler, GameObject> charActionsUI;
+    Dictionary<StatsHandler, GameObject> charSkillsUI;
 
     [SerializeField] float xDistance;
     [SerializeField] float yDistance;
@@ -23,7 +26,16 @@ public class UIManager : MonoBehaviour
     Transform chooseSkillTemplate;
     Transform chooseEnemyTemplate;
 
+    List<GameObject> activeTemplates = new List<GameObject>();
+
     Text currentText;
+
+    List<GameObject> actionCursors = new List<GameObject>();
+    List<GameObject> skillCursors = new List<GameObject>();
+    List<GameObject> allyTargetCursors = new List<GameObject>();
+    List<GameObject> enemyTargetCursors = new List<GameObject>();
+
+    GameObject activeCursor;
 
     private void Awake()
     {
@@ -31,6 +43,8 @@ public class UIManager : MonoBehaviour
 
         charactersHp = new Dictionary<StatsHandler, StatUI>();
         charactersMana = new Dictionary<StatsHandler, StatUI>();
+        charActionsUI = new Dictionary<StatsHandler, GameObject>();
+        charSkillsUI = new Dictionary<StatsHandler, GameObject>();
 
         chooseActionTemplate = transform.Find("ChooseActionTemplate");
         dialogueTemplate = transform.Find("DialogueTemplate");
@@ -47,11 +61,14 @@ public class UIManager : MonoBehaviour
     {
         InitializeDialogueTemplate();
         InitializeActionTemplate();
+        InitializeSkillTemplate();
+        InitializeEnemyTargetTemplate();
     }
 
     private void InitializeDialogueTemplate()
     {
         currentText = dialogueTemplate.Find("DialogueText").GetComponent<Text>();
+        activeTemplates.Add(dialogueTemplate.gameObject);
         StartCoroutine(ReadDialogue(startDialogue, dialogueDelay));
     }
 
@@ -68,6 +85,7 @@ public class UIManager : MonoBehaviour
             Transform allyInfo = Instantiate(allyInfoPrefab, alliesInfo);
             allyInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, i * -yDistance);
             allyInfo.Find("Name").GetComponent<Text>().text = players[i].charInfo.name;
+            allyTargetCursors.Add(allyInfo.Find("cursor").gameObject);
 
             #region InitHp
 
@@ -106,6 +124,7 @@ public class UIManager : MonoBehaviour
             #endregion
 
             Transform allyActions = Instantiate(allyActionsPrefab, alliesActions);
+            charActionsUI.Add(players[i], allyActions.gameObject);
 
             int x = 0;
             int y = 0;
@@ -115,6 +134,7 @@ public class UIManager : MonoBehaviour
                 RectTransform actionText = Instantiate(actionTextPrefab, allyActions).GetComponent<RectTransform>();
                 actionText.GetComponent<Text>().text = action.actionName;
                 actionText.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
+                actionCursors.Add(actionText.transform.Find("cursor").gameObject);
                 y++;
 
                 if (y == 4)
@@ -124,9 +144,83 @@ public class UIManager : MonoBehaviour
                 }
             }
 
-            allyActions.gameObject.SetActive(true);
             allyInfo.gameObject.SetActive(true);
         }
+    }
+
+    private void InitializeSkillTemplate()
+    {
+        Transform allySkillsPrefab = chooseSkillTemplate.Find("AllySkills");
+        Transform skillPrefab = allySkillsPrefab.Find("Skill");
+
+        foreach(StatsHandler player in players)
+        {
+            Transform allySkills = Instantiate(allySkillsPrefab, chooseSkillTemplate);
+            charSkillsUI.Add(player, allySkills.gameObject);
+
+            int x = 0;
+            int y = 0;
+
+            foreach(Skill skill in player.charInfo.skills)
+            {
+                Transform skillTransform = Instantiate(skillPrefab, allySkills);
+
+                RectTransform nameRect = skillTransform.Find("Name").GetComponent<RectTransform>();
+                nameRect.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
+                nameRect.GetComponent<Text>().text = skill.name;
+
+                skillTransform.Find("Description").GetComponent<Text>().text = skill.skillDescription;
+
+                RectTransform skillCursor = skillTransform.Find("cursor").GetComponent<RectTransform>();
+                skillCursor.anchoredPosition = new Vector2(skillCursor.anchoredPosition.x + x * xDistance, nameRect.anchoredPosition.y);
+                skillCursors.Add(skillCursor.gameObject);
+
+                skillTransform.gameObject.SetActive(true);
+
+                y++;
+                if(y == 4)
+                {
+                    x++;
+                    y = 0;
+                }
+            }
+        }
+    }
+
+    private void InitializeEnemyTargetTemplate()
+    {
+        Transform enemyInfoPrefab = chooseEnemyTemplate.Find("EnemyInfo");
+        
+        for(int i = 0; i < enemies.Count; i++)
+        {
+            Transform enemyInfo = Instantiate(enemyInfoPrefab, chooseEnemyTemplate);
+            enemyInfo.Find("Name").GetComponent<Text>().text = enemies[i].charInfo.name;
+            enemyTargetCursors.Add(enemyInfo.Find("cursor").gameObject);
+
+            Transform hpInfo = enemyInfo.Find("HpInfo");
+
+            Text currentHpText = hpInfo.Find("currentHpText").GetComponent<Text>();
+            currentHpText.text = players[i].currentMaxHp.ToString();
+
+            Text maxHpText = hpInfo.Find("maxHpText").GetComponent<Text>();
+            maxHpText.text = players[i].currentHp.ToString();
+
+            Slider hpBar = hpInfo.Find("Healthbar").GetComponent<Slider>();
+            hpBar.maxValue = players[i].currentMaxHp;
+            hpBar.value = players[i].currentHp;
+
+            charactersHp.Add(enemies[i], new StatUI(hpBar, currentHpText, maxHpText));
+
+            enemyInfo.gameObject.SetActive(true);
+        }
+    }
+
+    private void DeactivateTemplates()
+    {
+        foreach (GameObject template in activeTemplates)
+            template.SetActive(false);
+
+        activeTemplates.Clear();
     }
 
     public void UpdateHp(StatsHandler character)
@@ -137,6 +231,15 @@ public class UIManager : MonoBehaviour
     public void UpdateMana(StatsHandler character)
     {
         charactersMana[character].UpdateUI(character.currentMaxMana, character.currentMaxMana);
+    }
+
+    public void UpdateActionCursor(int index)
+    {
+        if (!activeCursor)
+            activeCursor.SetActive(false);
+
+        actionCursors[index].SetActive(true);
+        activeCursor = actionCursors[index];
     }
 
     public bool SkipDialogue()
@@ -159,8 +262,6 @@ public class UIManager : MonoBehaviour
         }
 
         currentDialogue.state = DialogueState.InQueue;
-        dialogueTemplate.gameObject.SetActive(false);
-        chooseActionTemplate.gameObject.SetActive(true);
         return true;
     }
 
@@ -179,6 +280,27 @@ public class UIManager : MonoBehaviour
         currentDialogue.state = DialogueState.Finished;
     }
 
+    public void SwitchToActionTemplate(StatsHandler player)
+    {
+        DeactivateTemplates();
+
+        chooseActionTemplate.gameObject.SetActive(true);
+        activeTemplates.Add(chooseActionTemplate.gameObject);
+
+        charActionsUI[player].SetActive(true);
+        activeTemplates.Add(charActionsUI[player]);
+    }
+
+    public void SwitchToSkillTemplate(StatsHandler player)
+    {
+        DeactivateTemplates();
+
+        chooseSkillTemplate.gameObject.SetActive(true);
+        activeTemplates.Add(chooseSkillTemplate.gameObject);
+
+        charSkillsUI[player].SetActive(true);
+        activeTemplates.Add(charSkillsUI[player]);
+    }
 }
 
 public class StatUI

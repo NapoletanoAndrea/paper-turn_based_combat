@@ -9,9 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adf0c7d125229d84d920106ecfd6b642, type: 3}
-  m_Name: Heal
+  m_Script: {fileID: 11500000, guid: 2a3b204d800733445bc9b226ea85cbba, type: 3}
+  m_Name: Demon Lord
   m_EditorClassIdentifier: 
-  actionName: Heal
-  manaConsumed: 5
-  skillDescription: Heals target
+  characterName: Demon Lord
+  maxHp: 100
+  baseAtk: 30
+  baseDef: 15
+  baseMagic: 20
+  maxMana: 50
+  actions:
+  - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
+  skills: []
