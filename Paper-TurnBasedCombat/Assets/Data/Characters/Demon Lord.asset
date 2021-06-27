@@ -18,6 +18,7 @@ MonoBehaviour:
   baseDef: 15
   baseMagic: 20
   maxMana: 50
+  speed: 10
   actions:
   - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
   skills: []

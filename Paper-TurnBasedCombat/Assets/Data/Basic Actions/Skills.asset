@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f9aa5c7e42458c449d510b8acb3ce60, type: 3}
-  m_Name: StartDialogue
+  m_Script: {fileID: 11500000, guid: 50e672442dc4a1845a6da36ac59e6e15, type: 3}
+  m_Name: Skills
   m_EditorClassIdentifier: 
-  dialogueText: Battle starting...
-  nextDialogue: {fileID: 0}
-  state: 0
+  actionName: Skills

@@ -12,6 +12,7 @@ public class CharacterInfo : ScriptableObject
     public int baseDef;
     public int baseMagic;
     public int maxMana;
+    public int speed;
 
     public List<Action> actions;
 

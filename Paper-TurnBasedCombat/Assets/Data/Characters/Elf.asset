@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Elf
   maxHp: 50
-  baseAtk: 10
+  baseAtk: 30
   baseDef: 10
   baseMagic: 10
   maxMana: 15
+  speed: 20
   actions:
   - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
-  skills: []
+  - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
+  - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
+  - {fileID: 11400000, guid: c8f129ea2a7b56c4ea1e5aa13573a182, type: 2}
+  skills:
+  - {fileID: 11400000, guid: 772d34fc8fc71e041b66e2474f0fd447, type: 2}

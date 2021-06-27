@@ -5,5 +5,5 @@ using UnityEngine;
 public abstract class Action : ScriptableObject
 {
     public string actionName;
-    public abstract void Act(StatsHandler attacker, StatsHandler target);
+    public abstract void Act(ActionParameter actionParameter);
 }

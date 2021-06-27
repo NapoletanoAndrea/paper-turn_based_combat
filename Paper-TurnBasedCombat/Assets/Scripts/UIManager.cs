@@ -7,12 +7,17 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
 
-    [SerializeField] Dialogue startDialogue;
+    [HideInInspector] public List<string> dialogueQueue = new List<string>();
+    [HideInInspector] public string currentDialogue;
     [SerializeField] float dialogueDelay;
-    [HideInInspector] public Dialogue currentDialogue;
+    bool finishedDialogue;
+
+    [SerializeField] string startDialogue;
 
     [SerializeField] List<StatsHandler> players = new List<StatsHandler>();
     [SerializeField] List<StatsHandler> enemies = new List<StatsHandler>();
+
+    Dictionary<StatsHandler, Text> charactersNames;
     Dictionary<StatsHandler, StatUI> charactersHp;
     Dictionary<StatsHandler, StatUI> charactersMana;
     Dictionary<StatsHandler, GameObject> charActionsUI;
@@ -41,6 +46,10 @@ public class UIManager : MonoBehaviour
     {
         instance = this;
 
+        dialogueQueue.Add(startDialogue);
+
+        charactersNames = new Dictionary<StatsHandler, Text>();
+
         charactersHp = new Dictionary<StatsHandler, StatUI>();
         charactersMana = new Dictionary<StatsHandler, StatUI>();
         charActionsUI = new Dictionary<StatsHandler, GameObject>();
@@ -68,8 +77,9 @@ public class UIManager : MonoBehaviour
     private void InitializeDialogueTemplate()
     {
         currentText = dialogueTemplate.Find("DialogueText").GetComponent<Text>();
+        dialogueTemplate.gameObject.SetActive(true);
         activeTemplates.Add(dialogueTemplate.gameObject);
-        StartCoroutine(ReadDialogue(startDialogue, dialogueDelay));
+        StartCoroutine(ReadDialogue(dialogueQueue[0], dialogueDelay));
     }
 
     private void InitializeActionTemplate()
@@ -80,11 +90,24 @@ public class UIManager : MonoBehaviour
         Transform alliesInfo = chooseActionTemplate.Find("AlliesInfo");
         Transform allyInfoPrefab = alliesInfo.Find("AllyInfo");
 
+        actionCursors.Add(chooseActionTemplate.Find("cursor").gameObject);
+        RectTransform actionCursorRect = actionCursors[0].GetComponent<RectTransform>();
+        for (int i = 0; i < 3; i++)
+        {
+            RectTransform cursorRect = Instantiate(actionCursors[0], chooseActionTemplate).GetComponent<RectTransform>();
+            cursorRect.anchoredPosition = new Vector2(actionCursorRect.anchoredPosition.x, actionCursorRect.anchoredPosition.y - (yDistance * (i + 1)));
+            actionCursors.Add(cursorRect.gameObject);
+        }
+
         for (int i = 0; i < players.Count; i++)
         {
             Transform allyInfo = Instantiate(allyInfoPrefab, alliesInfo);
             allyInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, i * -yDistance);
-            allyInfo.Find("Name").GetComponent<Text>().text = players[i].charInfo.name;
+
+            Text nameText = allyInfo.Find("Name").GetComponent<Text>();
+            nameText.text = players[i].charInfo.name;
+            charactersNames.Add(players[i], nameText);
+
             allyTargetCursors.Add(allyInfo.Find("cursor").gameObject);
 
             #region InitHp
@@ -134,7 +157,6 @@ public class UIManager : MonoBehaviour
                 RectTransform actionText = Instantiate(actionTextPrefab, allyActions).GetComponent<RectTransform>();
                 actionText.GetComponent<Text>().text = action.actionName;
                 actionText.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
-                actionCursors.Add(actionText.transform.Find("cursor").gameObject);
                 y++;
 
                 if (y == 4)
@@ -233,51 +255,88 @@ public class UIManager : MonoBehaviour
         charactersMana[character].UpdateUI(character.currentMaxMana, character.currentMaxMana);
     }
 
+    public void HighlightName(StatsHandler character)
+    {
+        foreach(KeyValuePair<StatsHandler, Text> characterName in charactersNames)
+        {
+            characterName.Value.color = new Color(0.196f, 0.196f, 0.196f);
+        }
+
+        charactersNames[character].color = Color.red;
+    }
+
     public void UpdateActionCursor(int index)
     {
-        if (!activeCursor)
+        if (activeCursor)
             activeCursor.SetActive(false);
 
         actionCursors[index].SetActive(true);
         activeCursor = actionCursors[index];
     }
 
+    public void UpdateEnemyCursor(int index)
+    {
+        if (activeCursor)
+            activeCursor.SetActive(false);
+
+        enemyTargetCursors[index].SetActive(true);
+        activeCursor = enemyTargetCursors[index];
+    }
+
+    public void UpdateSkillCursor(int index)
+    {
+        if (activeCursor)
+            activeCursor.SetActive(false);
+
+        skillCursors[index].SetActive(true);
+        activeCursor = skillCursors[index];
+    }
+
     public bool SkipDialogue()
     {
-        switch (currentDialogue.state)
+        switch (finishedDialogue)
         {
-            case DialogueState.Reading:
+            case false:
                 StopAllCoroutines();
-                currentText.text = currentDialogue.dialogueText;
-                currentDialogue.state = DialogueState.Finished;
+                currentText.text = currentDialogue;
+                dialogueQueue.RemoveAt(0);
+                finishedDialogue = true;
                 return false;
-            case DialogueState.Finished:
-                if (currentDialogue.nextDialogue != null)
+            case true:
+                if (dialogueQueue.Count > 0)
                 {
-                    StartCoroutine(ReadDialogue(currentDialogue.nextDialogue, dialogueDelay));
+                    StartCoroutine(ReadDialogue(dialogueQueue[0], dialogueDelay));
                     return false;
                 }
-                break;
-            default: break;               
+                break;          
         }
 
-        currentDialogue.state = DialogueState.InQueue;
         return true;
     }
 
-    private IEnumerator ReadDialogue(Dialogue dialogue, float waitSeconds)
+    private IEnumerator ReadDialogue(string dialogue, float waitSeconds)
     {
         currentText.text = "";
         currentDialogue = dialogue;
-        currentDialogue.state = DialogueState.Reading;
+        finishedDialogue = false;
 
-        for(int i = 0; i < dialogue.dialogueText.Length; i++)
+        for(int i = 0; i < dialogue.Length; i++)
         {
-            currentText.text += dialogue.dialogueText[i];
+            currentText.text += dialogue[i];
             yield return new WaitForSeconds(waitSeconds);
         }
 
-        currentDialogue.state = DialogueState.Finished;
+        dialogueQueue.RemoveAt(0);
+        finishedDialogue = true;
+    }
+
+    public void SwitchToDialogueTemplate()
+    {
+        DeactivateTemplates();
+
+        dialogueTemplate.gameObject.SetActive(true);
+        activeTemplates.Add(dialogueTemplate.gameObject);
+        StartCoroutine(ReadDialogue(dialogueQueue[0], dialogueDelay));
     }
 
     public void SwitchToActionTemplate(StatsHandler player)
@@ -300,6 +359,14 @@ public class UIManager : MonoBehaviour
 
         charSkillsUI[player].SetActive(true);
         activeTemplates.Add(charSkillsUI[player]);
+    }
+
+    public void SwitchToEnemyTemplate()
+    {
+        DeactivateTemplates();
+
+        chooseEnemyTemplate.gameObject.SetActive(true);
+        activeTemplates.Add(chooseEnemyTemplate.gameObject);
     }
 }
 
