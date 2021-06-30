@@ -9,6 +9,7 @@ public abstract class Skill : Action
 
     public override void Act(ActionParameter actionParameter)
     {
+        if (actionParameter.attacker.currentMana < manaConsumed) return;
         actionParameter.attacker.currentMana = Mathf.Clamp(actionParameter.attacker.currentMana - manaConsumed, 0, actionParameter.attacker.currentMaxMana);
     }
 }

@@ -15,7 +15,6 @@ public class BattleSystem : MonoBehaviour
     public List<StatsHandler> players;
     public List<StatsHandler> enemies;
     int charIndex;
-    int enemyIndex;
 
     [HideInInspector] public List<StatsHandler> actors = new List<StatsHandler>();
     int actorIndex = -1;
@@ -23,7 +22,7 @@ public class BattleSystem : MonoBehaviour
     Action chosenAction;
     Skill chosenSkill;
 
-    int actionIndex;
+    int index;
 
     private void Awake()
     {
@@ -54,9 +53,13 @@ public class BattleSystem : MonoBehaviour
                 ChooseAction();
                 break;
             case BattleState.SkillChoice:
+                ChooseSkill();
                 break;
             case BattleState.EnemyTargetChoice:
                 ChooseEnemy();
+                break;
+            case BattleState.AllyTargetChoice:
+                ChooseAlly();
                 break;
         }
     }
@@ -67,6 +70,8 @@ public class BattleSystem : MonoBehaviour
 
         if (actors[actorIndex].CompareTag("Player"))
             EnterActionState();
+        //else
+            //actors[actorIndex].GetComponent<ScoreController>().DoAction();
     }
 
     public void EnterDialogueState(params string[] dialogues)
@@ -85,6 +90,7 @@ public class BattleSystem : MonoBehaviour
         UIManager.instance.HighlightName(actors[actorIndex]);
         UIManager.instance.SwitchToActionTemplate(actors[actorIndex]);
         UIManager.instance.UpdateActionCursor(0);
+        index = 0;
     }
 
     public void EnterEnemyTargetState()
@@ -92,26 +98,43 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.EnemyTargetChoice;
         UIManager.instance.UpdateEnemyCursor(0);
         UIManager.instance.SwitchToEnemyTemplate();
+        index = 0;
+    }
+
+    public void EnterSkillState()
+    {
+        state = BattleState.SkillChoice;
+        UIManager.instance.UpdateSkillCursor(0);
+        UIManager.instance.SwitchToSkillTemplate(actors[actorIndex]);
+        index = 0;
+    }
+
+    public void EnterAllyState()
+    {
+        state = BattleState.AllyTargetChoice;
+        UIManager.instance.UpdateAllyCursor(0);
+        UIManager.instance.SwitchToActionTemplate(actors[actorIndex]);
+        index = 0;
     }
 
     private void ChooseAction()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            actionIndex = Utility.IncrementInt(actionIndex - 1, 4);
-            UIManager.instance.UpdateActionCursor(actionIndex);
+            index = Utility.IncrementInt(index - 1, 4);
+            UIManager.instance.UpdateActionCursor(index);
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            actionIndex = Utility.IncrementInt(actionIndex + 1, 4);
-            UIManager.instance.UpdateActionCursor(actionIndex);
+            index = Utility.IncrementInt(index + 1, 4);
+            UIManager.instance.UpdateActionCursor(index);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            chosenAction = players[charIndex].GetAction(actionIndex);
-            chosenAction.Act(new ActionChoiceParameter(players[charIndex]));
+            chosenAction = actors[actorIndex].GetAction(index);
+            chosenAction.Act(new ActionChoiceParameter(actors[actorIndex]));
         }
     }
 
@@ -119,24 +142,75 @@ public class BattleSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            enemyIndex = Utility.IncrementInt(enemyIndex - 1, 4);
-            UIManager.instance.UpdateEnemyCursor(enemyIndex);
+            index = Utility.IncrementInt(index - 1, enemies.Count);
+            UIManager.instance.UpdateEnemyCursor(index);
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            enemyIndex = Utility.IncrementInt(enemyIndex + 1, 4);
-            UIManager.instance.UpdateEnemyCursor(enemyIndex);
+            index = Utility.IncrementInt(index + 1, enemies.Count);
+            UIManager.instance.UpdateEnemyCursor(index);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            chosenAction.Act(new TargetChoiceParameter(players[charIndex], enemies[enemyIndex]));
+            chosenAction.Act(new TargetChoiceParameter(actors[actorIndex], enemies[index]));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EnterActionState();
         }
     }
 
     private void ChooseSkill()
     {
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            index = Utility.IncrementInt(index - 1, actors[actorIndex].GetSkillNum());
+            UIManager.instance.UpdateSkillCursor(index);
+        }
 
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            index = Utility.IncrementInt(index + 1, actors[actorIndex].GetSkillNum());
+            UIManager.instance.UpdateSkillCursor(index);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            chosenAction = actors[actorIndex].GetSkill(index);
+            chosenAction.Act(new ActionChoiceParameter(actors[actorIndex]));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EnterActionState();
+        }
+    }
+
+    private void ChooseAlly()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            index = Utility.IncrementInt(index - 1, players.Count);
+            UIManager.instance.UpdateAllyCursor(index);
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            index = Utility.IncrementInt(index + 1, players.Count);
+            UIManager.instance.UpdateAllyCursor(index);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            chosenAction.Act(new TargetChoiceParameter(actors[actorIndex], players[index]));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EnterActionState();
+        }
     }
 }

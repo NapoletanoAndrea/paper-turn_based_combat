@@ -191,6 +191,7 @@ public class UIManager : MonoBehaviour
                 nameRect.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
                 nameRect.GetComponent<Text>().text = skill.name;
 
+                skillTransform.Find("ManaRequired").GetComponent<Text>().text = "Mana Required: " + skill.manaConsumed;
                 skillTransform.Find("Description").GetComponent<Text>().text = skill.skillDescription;
 
                 RectTransform skillCursor = skillTransform.Find("cursor").GetComponent<RectTransform>();
@@ -288,8 +289,18 @@ public class UIManager : MonoBehaviour
         if (activeCursor)
             activeCursor.SetActive(false);
 
+        Debug.Log(index);
         skillCursors[index].SetActive(true);
         activeCursor = skillCursors[index];
+    }
+
+    public void UpdateAllyCursor(int index)
+    {
+        if (activeCursor)
+            activeCursor.SetActive(false);
+
+        allyTargetCursors[index].SetActive(true);
+        activeCursor = allyTargetCursors[index];
     }
 
     public bool SkipDialogue()

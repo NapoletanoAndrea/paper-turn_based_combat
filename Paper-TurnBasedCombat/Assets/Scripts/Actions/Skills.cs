@@ -7,6 +7,6 @@ public class Skills : Action
 {
     public override void Act(ActionParameter actionParameter)
     {
-        UIManager.instance.SwitchToSkillTemplate(actionParameter.attacker);
+        BattleSystem.instance.EnterSkillState();
     }
 }

@@ -37,6 +37,11 @@ public class StatsHandler : MonoBehaviour
         return charInfo.skills[index];
     }
 
+    public int GetSkillNum()
+    {
+        return charInfo.skills.Count;
+    }
+
     public void TakeDamage(int damage)
     {
         currentHp = Mathf.Clamp(currentHp - damage, 0, currentMaxHp);
