@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Heal", menuName = "ScriptableObjects/Skills/Heal")]
 public class Heal : Skill
 {
+    [SerializeField] float healMultiplier = 1;
+
     public override void Act(ActionParameter actionParameter)
     {
         base.Act(actionParameter);
@@ -15,9 +17,10 @@ public class Heal : Skill
                 BattleSystem.instance.EnterAllyState();
                 break;
             case TargetChoiceParameter p:
-                p.target.currentHp = Mathf.Clamp(p.target.currentHp + p.attacker.currentMagic, 0, p.target.currentMaxHp);
+                p.target.TakeDamage((int)-(p.attacker.currentMagic * healMultiplier));
 
-                string dmgText = p.attacker.name + " heals " + p.target.name + " for " + p.attacker.currentMagic + ".";
+                string healTarget = p.attacker == p.target ? "self" : p.target.name;
+                string dmgText = p.attacker.name + " heals " + healTarget + " for " + p.attacker.currentMagic * healMultiplier + ".";
                 BattleSystem.instance.EnterDialogueState(dmgText);
                 break;
         }

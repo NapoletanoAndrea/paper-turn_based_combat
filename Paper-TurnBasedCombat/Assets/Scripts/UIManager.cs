@@ -35,6 +35,9 @@ public class UIManager : MonoBehaviour
 
     Text currentText;
 
+    Dictionary<StatsHandler, List<GameObject>> skillDescriptions = new Dictionary<StatsHandler, List<GameObject>>();
+    GameObject activeSkillDescription;
+
     List<GameObject> actionCursors = new List<GameObject>();
     List<GameObject> skillCursors = new List<GameObject>();
     List<GameObject> allyTargetCursors = new List<GameObject>();
@@ -157,6 +160,7 @@ public class UIManager : MonoBehaviour
                 RectTransform actionText = Instantiate(actionTextPrefab, allyActions).GetComponent<RectTransform>();
                 actionText.GetComponent<Text>().text = action.actionName;
                 actionText.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
+                actionText.gameObject.SetActive(true);
                 y++;
 
                 if (y == 4)
@@ -175,13 +179,27 @@ public class UIManager : MonoBehaviour
         Transform allySkillsPrefab = chooseSkillTemplate.Find("AllySkills");
         Transform skillPrefab = allySkillsPrefab.Find("Skill");
 
-        foreach(StatsHandler player in players)
+        int x = 0;
+        int y = 0;
+
+        RectTransform actionCursorRect = actionCursors[0].GetComponent<RectTransform>();
+
+        for (int i = 0; i < 8; i++)
         {
+            RectTransform cursorRect = Instantiate(actionCursors[0], chooseSkillTemplate).GetComponent<RectTransform>();
+            cursorRect.anchoredPosition = new Vector2(actionCursorRect.anchoredPosition.x, actionCursorRect.anchoredPosition.y - (yDistance * i));
+            skillCursors.Add(cursorRect.gameObject);
+        }
+
+        foreach (StatsHandler player in players)
+        {
+            x = 0;
+            y = 0;
+
             Transform allySkills = Instantiate(allySkillsPrefab, chooseSkillTemplate);
             charSkillsUI.Add(player, allySkills.gameObject);
 
-            int x = 0;
-            int y = 0;
+            List<GameObject> descriptions = new List<GameObject>();
 
             foreach(Skill skill in player.charInfo.skills)
             {
@@ -192,11 +210,11 @@ public class UIManager : MonoBehaviour
                 nameRect.GetComponent<Text>().text = skill.name;
 
                 skillTransform.Find("ManaRequired").GetComponent<Text>().text = "Mana Required: " + skill.manaConsumed;
-                skillTransform.Find("Description").GetComponent<Text>().text = skill.skillDescription;
 
-                RectTransform skillCursor = skillTransform.Find("cursor").GetComponent<RectTransform>();
-                skillCursor.anchoredPosition = new Vector2(skillCursor.anchoredPosition.x + x * xDistance, nameRect.anchoredPosition.y);
-                skillCursors.Add(skillCursor.gameObject);
+                GameObject skillDescription = skillTransform.Find("Description").gameObject;
+                skillDescription.GetComponent<Text>().text = skill.skillDescription;
+                skillDescription.SetActive(false);
+                descriptions.Add(skillDescription);
 
                 skillTransform.gameObject.SetActive(true);
 
@@ -207,6 +225,8 @@ public class UIManager : MonoBehaviour
                     y = 0;
                 }
             }
+
+            skillDescriptions.Add(player, descriptions);
         }
     }
 
@@ -284,15 +304,19 @@ public class UIManager : MonoBehaviour
         activeCursor = enemyTargetCursors[index];
     }
 
-    public void UpdateSkillCursor(int index)
+    public void UpdateSkillCursor(StatsHandler player, int index)
     {
-        if (activeCursor)
-            activeCursor.SetActive(false);
+        activeCursor?.SetActive(false);
 
-        Debug.Log(index);
         skillCursors[index].SetActive(true);
         activeCursor = skillCursors[index];
+
+        activeSkillDescription?.SetActive(false);
+
+        activeSkillDescription = skillDescriptions[player][index];
+        activeSkillDescription.SetActive(true);
     }
+
 
     public void UpdateAllyCursor(int index)
     {

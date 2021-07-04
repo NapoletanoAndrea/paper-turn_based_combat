@@ -14,8 +14,22 @@ public class BaseSpell : Action
                 BattleSystem.instance.EnterEnemyTargetState();
                 break;
             case TargetChoiceParameter p:
-                p.target.TakeDamage(p.attacker.currentMagic);
+                int damage = GetDamage(p.attacker, p.target);
+                p.target.TakeDamage(damage);
+
+                string dmgText = p.attacker.name + " deals " + damage + "  damage to " + p.target.name + ".";
+                BattleSystem.instance.EnterDialogueState(dmgText);
                 break;
         }
+    }
+
+    public override int GetDamage(StatsHandler attacker, StatsHandler target)
+    {
+        return Utility.CalculateDamage(attacker.currentMagic, target.currentDef);
+    }
+
+    public override int GetAttackStat(StatsHandler attacker)
+    {
+        return attacker.currentMagic;
     }
 }

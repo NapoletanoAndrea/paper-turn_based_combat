@@ -367,7 +367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &204864929
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3439,6 +3439,8 @@ MonoBehaviour:
   enemies:
   - {fileID: 1909852773}
   actors: []
+  damageText: {fileID: 2550099234979867681, guid: 1491b89287864f94f8106baff03b5d66,
+    type: 3}
 --- !u!4 &1821839240
 Transform:
   m_ObjectHideFlags: 0
@@ -3747,8 +3749,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionContainers:
   - action: {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
+    targetScores:
+    - condition: {fileID: 11400000, guid: fd49305504705eb42b18eb3243a8f8b0, type: 2}
+      minScore: 0
+      maxScore: 0
+    - condition: {fileID: 11400000, guid: 13f5e8fbc9033ba4eba5648aa0767023, type: 2}
+      minScore: 0
+      maxScore: 0
+    - condition: {fileID: 11400000, guid: 8b0beb5de47697840af9f689b41bacdc, type: 2}
+      minScore: 0
+      maxScore: 100
     decisions:
-    - {fileID: 11400000, guid: b4cd5f88d10f8ee48878f029c917a4b9, type: 2}
+    - decision: {fileID: 11400000, guid: 004432418aa65ad43b75dc8a3477899b, type: 2}
+      minScore: 0
+      maxScore: 100
 --- !u!1 &1949450331
 GameObject:
   m_ObjectHideFlags: 0

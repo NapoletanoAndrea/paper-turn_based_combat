@@ -6,19 +6,14 @@ using UnityEngine;
 
 public class DamageDealtDecision : ActionDecision
 {
-    [SerializeField] float minScore;
-    [SerializeField] float maxScore;
-
     [SerializeField] Stat attackStat;
-
     [SerializeField] AnimationCurve curve;
 
-    public override float GetScore(StatsHandler attacker, StatsHandler target)
+    public override float GetScore(StatsHandler attacker, StatsHandler target, Action action)
     {
-        int damage = Utility.CalculateDamage((int)GetStat(attacker, attackStat), target.currentDef); 
-        float score = Utility.Proportion(damage, 30, 1);
+        int damage = action.GetDamage(attacker, target); 
+        float score = Utility.ToScale(0, action.GetAttackStat(attacker), 0, 1, damage);
         score = curve.Evaluate(score);
-        score = Utility.Proportion(score, 1, maxScore);
-        return score >= minScore ? score : minScore;
+        return score;
     }
 }

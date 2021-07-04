@@ -14,15 +14,15 @@ public class BattleSystem : MonoBehaviour
 
     public List<StatsHandler> players;
     public List<StatsHandler> enemies;
-    int charIndex;
 
     [HideInInspector] public List<StatsHandler> actors = new List<StatsHandler>();
     int actorIndex = -1;
 
     Action chosenAction;
-    Skill chosenSkill;
 
     int index;
+
+    [SerializeField] GameObject damageText;
 
     private void Awake()
     {
@@ -30,9 +30,22 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.Dialogue;
 
         foreach (var p in players)
+        {
             actors.Add(p);
+            p.OnDamageTaken += Handler_OnDamageTaken;
+        }
         foreach (var e in enemies)
+        {
             actors.Add(e);
+            e.OnDamageTaken += Handler_OnDamageTaken;
+        }
+    }
+
+    private void Handler_OnDamageTaken(Vector2 position, int damage)
+    {
+        Vector2 startPosition = position /*+ Vector2.right * -.6f*/;
+        Vector2 endPoint = startPosition + Vector2.up * .8f;
+        Instantiate(damageText, startPosition, Quaternion.identity).GetComponent<DamageTextBehaviour>().Init(damage, endPoint);
     }
 
     private void Start()
@@ -66,12 +79,18 @@ public class BattleSystem : MonoBehaviour
 
     private void UpdateTurn()
     {
-        actorIndex = Utility.IncrementInt(actorIndex + 1, players.Count);
+        do
+        {
+            actorIndex = Utility.IncrementInt(actorIndex + 1, actors.Count);
+        }
+        while (actors[actorIndex].IsDead());
+
+        actors[actorIndex].UpdateStatus();
 
         if (actors[actorIndex].CompareTag("Player"))
             EnterActionState();
-        //else
-            //actors[actorIndex].GetComponent<ScoreController>().DoAction();
+        else
+            actors[actorIndex].GetComponent<ScoreController>().DoAction(actors[actorIndex]);
     }
 
     public void EnterDialogueState(params string[] dialogues)
@@ -104,7 +123,7 @@ public class BattleSystem : MonoBehaviour
     public void EnterSkillState()
     {
         state = BattleState.SkillChoice;
-        UIManager.instance.UpdateSkillCursor(0);
+        UIManager.instance.UpdateSkillCursor(actors[actorIndex], 0);
         UIManager.instance.SwitchToSkillTemplate(actors[actorIndex]);
         index = 0;
     }
@@ -168,13 +187,13 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             index = Utility.IncrementInt(index - 1, actors[actorIndex].GetSkillNum());
-            UIManager.instance.UpdateSkillCursor(index);
+            UIManager.instance.UpdateSkillCursor(actors[actorIndex], index);
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             index = Utility.IncrementInt(index + 1, actors[actorIndex].GetSkillNum());
-            UIManager.instance.UpdateSkillCursor(index);
+            UIManager.instance.UpdateSkillCursor(actors[actorIndex], index);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
@@ -212,5 +231,18 @@ public class BattleSystem : MonoBehaviour
         {
             EnterActionState();
         }
+    }
+
+    public StatsHandler GetRandomTarget()
+    {
+        StatsHandler target;
+
+        do
+        {
+            target = players[UnityEngine.Random.Range(0, players.Count)];
+        }
+        while (target.IsDead());
+
+        return target;
     }
 }

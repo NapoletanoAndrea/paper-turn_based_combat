@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class Utility
 {
@@ -14,7 +15,7 @@ public static class Utility
 
     public static int CalculateDamage(int offensiveValue, int defensiveValue)
     {
-        return offensiveValue > defensiveValue ? offensiveValue - defensiveValue : 1;
+        return offensiveValue > defensiveValue ? offensiveValue - defensiveValue : 0;
     }
 
     public static float Average(List<float> values, int numOfValues)
@@ -30,5 +31,32 @@ public static class Utility
     public static float Proportion(float x1, float x2, float y)
     {
         return x1 * y / x2;
+    }
+
+    public static float GetStat(StatsHandler handler, Stat stat)
+    {
+        switch (stat)
+        {
+            case Stat.MaxHp: return handler.currentMaxHp;
+            case Stat.Hp: return handler.currentHp;
+            case Stat.Atk: return handler.currentAtk;
+            case Stat.Def: return handler.currentDef;
+            case Stat.MaxMana: return handler.currentMaxMana;
+            case Stat.Magic: return handler.currentMagic;
+            case Stat.Mana: return handler.currentMana;
+            case Stat.Speed: return handler.currentSpeed;
+        }
+
+        return 0f;
+    }
+    
+    public static float ToScale(float x0, float x2, float y0, float y2, float x1)
+    {
+        float n = Mathf.Abs(x0) < Mathf.Abs(x2) ? x0 : x2;
+        n = x1 - n;
+        float r = n != 0 ? (Mathf.Abs(x0) + x2)/n : 0;
+        float R = r != 0 ? 1 / r : 0;
+        float t = (Mathf.Abs(y0) + y2) * R;
+        return t + y0;
     }
 }

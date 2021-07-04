@@ -21,4 +21,6 @@ MonoBehaviour:
   speed: 15
   actions:
   - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
-  skills: []
+  - {fileID: 11400000, guid: c8f129ea2a7b56c4ea1e5aa13573a182, type: 2}
+  skills:
+  - {fileID: 11400000, guid: a137988abe93fb843b6844f75358d8ce, type: 2}

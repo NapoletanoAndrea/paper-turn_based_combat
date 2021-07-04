@@ -13,12 +13,22 @@ public class Attack : Action
                 BattleSystem.instance.EnterEnemyTargetState();
                 break;
             case TargetChoiceParameter p:
-                int damage = Utility.CalculateDamage(p.attacker.currentAtk, p.target.currentDef);
+                int damage = GetDamage(p.attacker, p.target);
                 p.target.TakeDamage(damage);
 
                 string dmgText = p.attacker.name + " deals " + damage + " damage to " + p.target.name + ".";
                 BattleSystem.instance.EnterDialogueState(dmgText);
                 break;
         }
+    }
+
+    public override int GetDamage(StatsHandler attacker, StatsHandler target)
+    {
+        return Utility.CalculateDamage(attacker.currentAtk, target.currentDef);
+    }
+
+    public override int GetAttackStat(StatsHandler attacker)
+    {
+        return attacker.currentAtk;
     }
 }
