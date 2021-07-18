@@ -15,4 +15,4 @@ MonoBehaviour:
   actionName: Heal
   manaConsumed: 5
   skillDescription: Heals target
-  healMultiplier: 1
+  healMultiplier: 2

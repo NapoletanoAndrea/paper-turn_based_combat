@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/TargetConditions/LowestStat")]
-public class LowestStat : TargetCondition
+[CreateAssetMenu(menuName = "ScriptableObjects/TargetConditions/StatDecision")]
+public class StatDecision : TargetCondition
 {
     [SerializeField] Stat stat;
     [SerializeField] int maxStatValue;

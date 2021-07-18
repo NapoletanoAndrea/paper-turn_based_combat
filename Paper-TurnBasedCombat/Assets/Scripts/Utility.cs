@@ -33,21 +33,21 @@ public static class Utility
         return x1 * y / x2;
     }
 
-    public static float GetStat(StatsHandler handler, Stat stat)
+    public static ref int GetStat(StatsHandler handler, Stat stat)
     {
         switch (stat)
         {
-            case Stat.MaxHp: return handler.currentMaxHp;
-            case Stat.Hp: return handler.currentHp;
-            case Stat.Atk: return handler.currentAtk;
-            case Stat.Def: return handler.currentDef;
-            case Stat.MaxMana: return handler.currentMaxMana;
-            case Stat.Magic: return handler.currentMagic;
-            case Stat.Mana: return handler.currentMana;
-            case Stat.Speed: return handler.currentSpeed;
+            case Stat.MaxHp: return ref handler.currentMaxHp;
+            case Stat.Hp: return ref handler.currentHp;
+            case Stat.Atk: return ref handler.currentAtk;
+            case Stat.Def: return ref handler.currentDef;
+            case Stat.MaxMana: return ref handler.currentMaxMana;
+            case Stat.Magic: return ref handler.currentMagic;
+            case Stat.Mana: return ref handler.currentMana;
+            case Stat.Speed: return ref handler.currentSpeed;
         }
 
-        return 0f;
+        return ref handler.currentMaxHp;
     }
     
     public static float ToScale(float x0, float x2, float y0, float y2, float x1)

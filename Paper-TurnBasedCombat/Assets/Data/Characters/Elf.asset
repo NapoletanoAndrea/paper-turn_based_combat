@@ -15,13 +15,17 @@ MonoBehaviour:
   characterName: Elf
   maxHp: 50
   baseAtk: 30
-  baseDef: 10
-  baseMagic: 10
-  maxMana: 15
+  baseDef: 5
+  baseMagic: 30
+  maxMana: 35
   speed: 20
   actions:
   - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
   - {fileID: 11400000, guid: c8f129ea2a7b56c4ea1e5aa13573a182, type: 2}
+  - {fileID: 11400000, guid: 75a0143cd8407ef4183c93195160765f, type: 2}
+  - {fileID: 11400000, guid: 15a7bb4d48d09bd408b9f9bcaa88dfa7, type: 2}
   skills:
+  - {fileID: 11400000, guid: 16b2fe5d1e8d3e54f8a518a2c10312c7, type: 2}
   - {fileID: 11400000, guid: 772d34fc8fc71e041b66e2474f0fd447, type: 2}
-  - {fileID: 11400000, guid: a137988abe93fb843b6844f75358d8ce, type: 2}
+  - {fileID: 11400000, guid: 8f9902dc084847942b44e14827cf7e4f, type: 2}
+  - {fileID: 11400000, guid: acedd9964ac094b4f9c7bb789b10b64d, type: 2}

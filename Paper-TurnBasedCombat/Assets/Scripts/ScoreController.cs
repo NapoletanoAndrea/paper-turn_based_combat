@@ -14,11 +14,13 @@ public class ScoreController : MonoBehaviour
         foreach(var aC in actionContainers)
         {
             var temp = aC.GetScore(attacker, aC.GetTarget(attacker));
+
             if (temp > highScore)
             {
                 highScore = temp;
                 chosenAction = aC;
             }
+            
         }
         
         chosenAction?.DoAction(attacker, chosenAction?.GetTarget(attacker));

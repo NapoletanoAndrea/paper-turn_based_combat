@@ -35,8 +35,10 @@ public class UIManager : MonoBehaviour
 
     Text currentText;
 
+    Dictionary<StatsHandler, List<GameObject>> skillsManaRequired = new Dictionary<StatsHandler, List<GameObject>>();
     Dictionary<StatsHandler, List<GameObject>> skillDescriptions = new Dictionary<StatsHandler, List<GameObject>>();
     GameObject activeSkillDescription;
+    GameObject activeManaRequired;
 
     List<GameObject> actionCursors = new List<GameObject>();
     List<GameObject> skillCursors = new List<GameObject>();
@@ -200,6 +202,7 @@ public class UIManager : MonoBehaviour
             charSkillsUI.Add(player, allySkills.gameObject);
 
             List<GameObject> descriptions = new List<GameObject>();
+            List<GameObject> manaRequireds = new List<GameObject>();
 
             foreach(Skill skill in player.charInfo.skills)
             {
@@ -207,9 +210,12 @@ public class UIManager : MonoBehaviour
 
                 RectTransform nameRect = skillTransform.Find("Name").GetComponent<RectTransform>();
                 nameRect.anchoredPosition = new Vector2(x * xDistance, y * -yDistance);
-                nameRect.GetComponent<Text>().text = skill.name;
+                nameRect.GetComponent<Text>().text = skill.actionName;
 
-                skillTransform.Find("ManaRequired").GetComponent<Text>().text = "Mana Required: " + skill.manaConsumed;
+                GameObject manaRequired = skillTransform.Find("ManaRequired").gameObject;
+                manaRequired.GetComponent<Text>().text = "Mana Required: " + skill.manaConsumed;
+                manaRequired.SetActive(false);
+                manaRequireds.Add(manaRequired);
 
                 GameObject skillDescription = skillTransform.Find("Description").gameObject;
                 skillDescription.GetComponent<Text>().text = skill.skillDescription;
@@ -227,6 +233,7 @@ public class UIManager : MonoBehaviour
             }
 
             skillDescriptions.Add(player, descriptions);
+            skillsManaRequired.Add(player, manaRequireds);
         }
     }
 
@@ -243,14 +250,14 @@ public class UIManager : MonoBehaviour
             Transform hpInfo = enemyInfo.Find("HpInfo");
 
             Text currentHpText = hpInfo.Find("currentHpText").GetComponent<Text>();
-            currentHpText.text = players[i].currentMaxHp.ToString();
+            currentHpText.text = enemies[i].currentMaxHp.ToString();
 
             Text maxHpText = hpInfo.Find("maxHpText").GetComponent<Text>();
-            maxHpText.text = players[i].currentHp.ToString();
+            maxHpText.text = enemies[i].currentHp.ToString();
 
             Slider hpBar = hpInfo.Find("Healthbar").GetComponent<Slider>();
-            hpBar.maxValue = players[i].currentMaxHp;
-            hpBar.value = players[i].currentHp;
+            hpBar.maxValue = enemies[i].currentMaxHp;
+            hpBar.value = enemies[i].currentHp;
 
             charactersHp.Add(enemies[i], new StatUI(hpBar, currentHpText, maxHpText));
 
@@ -315,6 +322,11 @@ public class UIManager : MonoBehaviour
 
         activeSkillDescription = skillDescriptions[player][index];
         activeSkillDescription.SetActive(true);
+
+        activeManaRequired?.SetActive(false);
+
+        activeManaRequired = skillsManaRequired[player][index];
+        activeManaRequired.SetActive(true);
     }
 
 

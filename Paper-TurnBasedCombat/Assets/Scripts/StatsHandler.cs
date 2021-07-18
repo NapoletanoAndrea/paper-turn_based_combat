@@ -20,6 +20,7 @@ public class StatsHandler : MonoBehaviour
 
     SpriteRenderer sR;
 
+    public int turboCounter;
     public List<Status> inflictedStatuses = new List<Status>();
 
     private void Awake()
@@ -51,10 +52,22 @@ public class StatsHandler : MonoBehaviour
         return charInfo.skills.Count;
     }
 
+    public void UpdateStatusBefore()
+    {
+        for (int i = 0; i < inflictedStatuses.Count; i++)
+        {
+            if (!inflictedStatuses[i].UpdateStatusBefore(this))
+                i--;
+        }
+    }
+
     public void UpdateStatus()
     {
-        foreach (var status in inflictedStatuses)
-            status.UpdateStatus(this);
+        for(int i = 0; i < inflictedStatuses.Count; i++)
+        {
+            if (!inflictedStatuses[i].UpdateStatus(this))
+                i--;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -69,9 +82,15 @@ public class StatsHandler : MonoBehaviour
 
     private void Die()
     {
+        foreach (var status in inflictedStatuses)
+            status.OnStatusRemoved(this);
+
         inflictedStatuses.Clear();
+        turboCounter = 0;
+
         string dialogue = name + " has died";
         UIManager.instance.dialogueQueue.Add(dialogue);
+
         sR.color = new Color(0.8301887f, 0.09006765f, 0.09006765f);
     }
 

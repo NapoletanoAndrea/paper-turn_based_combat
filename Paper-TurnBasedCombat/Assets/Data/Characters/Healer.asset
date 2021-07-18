@@ -16,11 +16,16 @@ MonoBehaviour:
   maxHp: 30
   baseAtk: 0
   baseDef: 5
-  baseMagic: 10
-  maxMana: 20
+  baseMagic: 15
+  maxMana: 50
   speed: 0
   actions:
   - {fileID: 11400000, guid: 5f28405bcc95e0846aa09deee5cb5852, type: 2}
   - {fileID: 11400000, guid: c8f129ea2a7b56c4ea1e5aa13573a182, type: 2}
+  - {fileID: 11400000, guid: 75a0143cd8407ef4183c93195160765f, type: 2}
+  - {fileID: 11400000, guid: 15a7bb4d48d09bd408b9f9bcaa88dfa7, type: 2}
   skills:
   - {fileID: 11400000, guid: 772d34fc8fc71e041b66e2474f0fd447, type: 2}
+  - {fileID: 11400000, guid: e0b857c3ae99fa74bb2a87615f270b9a, type: 2}
+  - {fileID: 11400000, guid: 6755bd491c576a743958c2bb31b3b2d6, type: 2}
+  - {fileID: 11400000, guid: b805d86cdc762e240bc83931da69f6e7, type: 2}

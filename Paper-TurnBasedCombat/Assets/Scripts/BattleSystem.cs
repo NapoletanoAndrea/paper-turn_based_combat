@@ -79,13 +79,14 @@ public class BattleSystem : MonoBehaviour
 
     private void UpdateTurn()
     {
+        if(actorIndex >= 0) actors[actorIndex].UpdateStatus();
         do
         {
             actorIndex = Utility.IncrementInt(actorIndex + 1, actors.Count);
         }
         while (actors[actorIndex].IsDead());
 
-        actors[actorIndex].UpdateStatus();
+        actors[actorIndex].UpdateStatusBefore();
 
         if (actors[actorIndex].CompareTag("Player"))
             EnterActionState();
@@ -199,6 +200,7 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             chosenAction = actors[actorIndex].GetSkill(index);
+            if (actors[actorIndex].currentMana < ((Skill)chosenAction).manaConsumed) return;
             chosenAction.Act(new ActionChoiceParameter(actors[actorIndex]));
         }
 
@@ -244,5 +246,10 @@ public class BattleSystem : MonoBehaviour
         while (target.IsDead());
 
         return target;
+    }
+
+    public StatsHandler GetCurrentActor()
+    {
+        return actors[actorIndex];
     }
 }

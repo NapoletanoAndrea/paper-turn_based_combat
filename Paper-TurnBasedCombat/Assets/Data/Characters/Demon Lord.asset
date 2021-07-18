@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: Demon Lord
   m_EditorClassIdentifier: 
   characterName: Demon Lord
-  maxHp: 100
+  maxHp: 120
   baseAtk: 10
   baseDef: 15
   baseMagic: 20
   maxMana: 50
   speed: 10
-  actions:
-  - {fileID: 11400000, guid: 384602969df25964c9ee7d06076e2115, type: 2}
+  actions: []
   skills: []
