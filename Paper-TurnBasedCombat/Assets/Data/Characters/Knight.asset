@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: Knight
   maxHp: 50
   baseAtk: 25
-  baseDef: 15
+  baseDef: 10
   baseMagic: 0
   maxMana: 30
   speed: 15

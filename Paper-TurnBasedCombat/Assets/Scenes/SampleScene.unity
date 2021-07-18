@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 121621207}
   - component: {fileID: 121621210}
   m_Layer: 0
-  m_Name: healer
+  m_Name: Healer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1941,7 +1941,7 @@ GameObject:
   - component: {fileID: 937301909}
   - component: {fileID: 937301912}
   m_Layer: 0
-  m_Name: elf
+  m_Name: Elf
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2311,7 +2311,7 @@ GameObject:
   - component: {fileID: 1145076300}
   - component: {fileID: 1145076303}
   m_Layer: 0
-  m_Name: knight
+  m_Name: Knight
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3607,7 +3607,7 @@ GameObject:
   - component: {fileID: 1693002041}
   - component: {fileID: 1693002044}
   m_Layer: 0
-  m_Name: mage
+  m_Name: Mage
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4137,7 +4137,7 @@ GameObject:
   - component: {fileID: 1909852773}
   - component: {fileID: 1909852774}
   m_Layer: 0
-  m_Name: demon lord
+  m_Name: Demon Lord
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

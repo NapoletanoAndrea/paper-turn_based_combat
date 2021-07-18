@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Demon Lord
   maxHp: 120
-  baseAtk: 10
+  baseAtk: 15
   baseDef: 15
   baseMagic: 20
   maxMana: 50

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc0eba79ee5aff41833b4b8454a931f, type: 3}
   m_Name: Resuscitate
   m_EditorClassIdentifier: 
-  actionName: Resuscitate
+  actionName: Revive
   manaConsumed: 0
   skillDescription: Resuscitates a target
   turboRequired: 1
